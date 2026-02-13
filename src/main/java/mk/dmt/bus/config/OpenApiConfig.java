@@ -22,7 +22,7 @@ public class OpenApiConfig {
                         .description("API for tracking intercity bus connections in North Macedonia and neighboring countries")
                         .contact(new Contact()
                                 .name("DMT Bus Team")
-                                .url("https://github.com/yourusername/dmtbus"))
+                                .url("https://github.com/vdimitriev/dmtbus"))
                         .license(new License()
                                 .name("MIT License")
                                 .url("https://opensource.org/licenses/MIT")))
