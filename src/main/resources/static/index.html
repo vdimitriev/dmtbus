@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DMT Bus Search Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+        }
+        .section {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .results {
+            margin-top: 20px;
+        }
+        .result-item {
+            background: #f9f9f9;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-left: 3px solid #007bff;
+        }
+        .error {
+            color: #dc3545;
+            padding: 10px;
+            background: #f8d7da;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+        .loading {
+            color: #007bff;
+            font-style: italic;
+        }
+        pre {
+            background: #f4f4f4;
+            padding: 10px;
+            overflow-x: auto;
+            border-radius: 4px;
+        }
+        .config {
+            background: #e7f3ff;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>DMT Bus Search Test</h1>
+
+    <div class="config">
+        <label for="apiBaseUrl">API Base URL:</label>
+        <input type="text" id="apiBaseUrl" value="http://localhost:8080">
+    </div>
+
+    <!-- Search Cities -->
+    <div class="section">
+        <h2>Search Cities</h2>
+        <div class="form-group">
+            <label for="citySearchName">City Name:</label>
+            <input type="text" id="citySearchName" placeholder="e.g., Skopje">
+        </div>
+        <button onclick="searchCities()">Search Cities</button>
+        <button onclick="getAllCities()">Get All Cities</button>
+        <div id="cityResults" class="results"></div>
+    </div>
+
+    <!-- Search Bus Stations -->
+    <div class="section">
+        <h2>Search Bus Stations</h2>
+        <div class="form-group">
+            <label for="stationSearchName">Station Name:</label>
+            <input type="text" id="stationSearchName" placeholder="e.g., Автобуска">
+        </div>
+        <button onclick="searchStations()">Search Stations</button>
+        <button onclick="getMainStations()">Get Main Stations</button>
+        <div id="stationResults" class="results"></div>
+    </div>
+
+    <!-- Search Bus Companies -->
+    <div class="section">
+        <h2>Search Bus Companies</h2>
+        <div class="form-group">
+            <label for="companySearchName">Company Name:</label>
+            <input type="text" id="companySearchName" placeholder="e.g., Galeb">
+        </div>
+        <button onclick="searchCompanies()">Search Companies</button>
+        <button onclick="getActiveCompanies()">Get Active Companies</button>
+        <div id="companyResults" class="results"></div>
+    </div>
+
+    <!-- Search Connections -->
+    <div class="section">
+        <h2>Search Bus Connections</h2>
+        <div class="form-group">
+            <label for="originCityId">Origin City ID:</label>
+            <input type="number" id="originCityId" placeholder="e.g., 1">
+        </div>
+        <div class="form-group">
+            <label for="destinationCityId">Destination City ID:</label>
+            <input type="number" id="destinationCityId" placeholder="e.g., 2">
+        </div>
+        <div class="form-group">
+            <label for="searchDate">Date (optional):</label>
+            <input type="date" id="searchDate">
+        </div>
+        <button onclick="searchConnections()">Search Connections</button>
+        <div id="connectionResults" class="results"></div>
+    </div>
+
+    <!-- Search Connections by Day -->
+    <div class="section">
+        <h2>Search Connections by Day of Week</h2>
+        <div class="form-group">
+            <label for="dayOriginCityId">Origin City ID:</label>
+            <input type="number" id="dayOriginCityId" placeholder="e.g., 1">
+        </div>
+        <div class="form-group">
+            <label for="dayDestinationCityId">Destination City ID:</label>
+            <input type="number" id="dayDestinationCityId" placeholder="e.g., 2">
+        </div>
+        <div class="form-group">
+            <label for="dayOfWeek">Day of Week:</label>
+            <select id="dayOfWeek">
+                <option value="MONDAY">Monday</option>
+                <option value="TUESDAY">Tuesday</option>
+                <option value="WEDNESDAY">Wednesday</option>
+                <option value="THURSDAY">Thursday</option>
+                <option value="FRIDAY">Friday</option>
+                <option value="SATURDAY">Saturday</option>
+                <option value="SUNDAY">Sunday</option>
+            </select>
+        </div>
+        <button onclick="searchConnectionsByDay()">Search by Day</button>
+        <div id="dayResults" class="results"></div>
+    </div>
+
+    <!-- Search Routes -->
+    <div class="section">
+        <h2>Search Bus Line Routes</h2>
+        <div class="form-group">
+            <label for="routeOriginCityId">Origin City ID:</label>
+            <input type="number" id="routeOriginCityId" placeholder="e.g., 1">
+        </div>
+        <div class="form-group">
+            <label for="routeDestinationCityId">Destination City ID:</label>
+            <input type="number" id="routeDestinationCityId" placeholder="e.g., 2">
+        </div>
+        <button onclick="searchRoutes()">Search Routes</button>
+        <div id="routeResults" class="results"></div>
+    </div>
+
+    <script>
+        function getApiBaseUrl() {
+            return document.getElementById('apiBaseUrl').value;
+        }
+
+        function displayResults(elementId, data, title) {
+            const element = document.getElementById(elementId);
+            if (data.length === 0) {
+                element.innerHTML = '<p>No results found.</p>';
+            } else {
+                element.innerHTML = `<h3>${title} (${data.length} results):</h3>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>`;
+            }
+        }
+
+        function displayError(elementId, error) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `<div class="error">Error: ${error}</div>`;
+        }
+
+        function displayLoading(elementId) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = '<p class="loading">Loading...</p>';
+        }
+
+        async function searchCities() {
+            const name = document.getElementById('citySearchName').value;
+            if (!name) {
+                alert('Please enter a city name');
+                return;
+            }
+            displayLoading('cityResults');
+            try {
+                const response = await fetch(`${getApiBaseUrl()}/api/cities/search?name=${encodeURIComponent(name)}`);
+                if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                const data = await response.json();
+                displayResults('cityResults', data, 'Cities');
+            } catch (error) {
+                displayError('cityResults', error.message);
+            }
+        }
+
+        async function getAllCities() {
+            displayLoading('cityResults');
+            try {
+                const response = await fetch(`${getApiBaseUrl()}/api/cities`);
+                if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                const data = await response.json();
+                displayResults('cityResults', data, 'All Cities');
+            } catch (error) {
+                displayError('cityResults', error.message);
+            }
+        }
+
+        async function searchStations() {
+            const name = document.getElementById('stationSearchName').value;
+            if (!name) {
+                alert('Please enter a station name');
+                return;
+            }
+            displayLoading('stationResults');
+            try {
+                const response = await fetch(`${getApiBaseUrl()}/api/stations/search?name=${encodeURIComponent(name)}`);
+                if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                const data = await response.json();
+                displayResults('stationResults', data, 'Bus Stations');
+            } catch (error) {
+                displayError('stationResults', error.message);
+            }
+        }
+
+        async function getMainStations() {
+            displayLoading('stationResults');
+            try {
+                const response = await fetch(`${getApiBaseUrl()}/api/stations/main`);
+                if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                const data = await response.json();
+                displayResults('stationResults', data, 'Main Stations');
+            } catch (error) {
+                displayError('stationResults', error.message);
+            }
+        }
+
+        async function searchCompanies() {
+            const name = document.getElementById('companySearchName').value;
+            if (!name) {
+                alert('Please enter a company name');
+                return;
+            }
+            displayLoading('companyResults');
+            try {
+                const response = await fetch(`${getApiBaseUrl()}/api/companies/search?name=${encodeURIComponent(name)}`);
+                if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                const data = await response.json();
+                displayResults('companyResults', data, 'Bus Companies');
+            } catch (error) {
+                displayError('companyResults', error.message);
+            }
+        }
+
+        async function getActiveCompanies() {
+            displayLoading('companyResults');
+            try {
+                const response = await fetch(`${getApiBaseUrl()}/api/companies/active`);
+                if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                const data = await response.json();
+                displayResults('companyResults', data, 'Active Companies');
+            } catch (error) {
+                displayError('companyResults', error.message);
+            }
+        }
+
+        async function searchConnections() {
+            const originCityId = document.getElementById('originCityId').value;
+            const destinationCityId = document.getElementById('destinationCityId').value;
+            const date = document.getElementById('searchDate').value;
+
+            if (!originCityId || !destinationCityId) {
+                alert('Please enter both origin and destination city IDs');
+                return;
+            }
+
+            displayLoading('connectionResults');
+            try {
+                let url = `${getApiBaseUrl()}/api/search?originCityId=${originCityId}&destinationCityId=${destinationCityId}`;
+                if (date) {
+                    url += `&date=${date}`;
+                }
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                const data = await response.json();
+                displayResults('connectionResults', data, 'Bus Connections');
+            } catch (error) {
+                displayError('connectionResults', error.message);
+            }
+        }
+
+        async function searchConnectionsByDay() {
+            const originCityId = document.getElementById('dayOriginCityId').value;
+            const destinationCityId = document.getElementById('dayDestinationCityId').value;
+            const dayOfWeek = document.getElementById('dayOfWeek').value;
+
+            if (!originCityId || !destinationCityId) {
+                alert('Please enter both origin and destination city IDs');
+                return;
+            }
+
+            displayLoading('dayResults');
+            try {
+                const url = `${getApiBaseUrl()}/api/search/day?originCityId=${originCityId}&destinationCityId=${destinationCityId}&dayOfWeek=${dayOfWeek}`;
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                const data = await response.json();
+                displayResults('dayResults', data, 'Connections');
+            } catch (error) {
+                displayError('dayResults', error.message);
+            }
+        }
+
+        async function searchRoutes() {
+            const originCityId = document.getElementById('routeOriginCityId').value;
+            const destinationCityId = document.getElementById('routeDestinationCityId').value;
+
+            if (!originCityId || !destinationCityId) {
+                alert('Please enter both origin and destination city IDs');
+                return;
+            }
+
+            displayLoading('routeResults');
+            try {
+                const url = `${getApiBaseUrl()}/api/lines/route?originCityId=${originCityId}&destinationCityId=${destinationCityId}`;
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                const data = await response.json();
+                displayResults('routeResults', data, 'Bus Line Routes');
+            } catch (error) {
+                displayError('routeResults', error.message);
+            }
+        }
+    </script>
+</body>
+</html>
+

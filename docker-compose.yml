@@ -1,0 +1,43 @@
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: dmtbus-postgres
+    environment:
+      POSTGRES_DB: dmtbus
+      POSTGRES_USER: dmtbus
+      POSTGRES_PASSWORD: dmtbus
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - dmtbus-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dmtbus -d dmtbus"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  dmtbus-app:
+    build: .
+    container_name: dmtbus-app
+    environment:
+      DB_USERNAME: dmtbus
+      DB_PASSWORD: dmtbus
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/dmtbus
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - dmtbus-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+
+networks:
+  dmtbus-network:
+    driver: bridge

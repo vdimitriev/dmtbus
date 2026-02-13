@@ -1,0 +1,39 @@
+# Build artifacts
+build/
+target/
+*.jar
+*.war
+
+# IDE files
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+.settings/
+.project
+.classpath
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp
+.gradle/
+
+# Node modules (if any)
+node_modules/
+
+# Documentation
+*.md
+HELP.md
