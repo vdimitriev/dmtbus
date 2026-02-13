@@ -1,50 +1,21 @@
 # Railway Database Connection - Quick Fix
 
+## Good News!
+The application now automatically converts Railway's `DATABASE_URL` to the correct JDBC format. Railway always provides this variable when you add a PostgreSQL database.
+
 ## Problem
 Application is trying to connect to `localhost:5432` instead of Railway's PostgreSQL database.
 
 ## Solution
 
-### Step 1: Verify Database is Added and Linked
+### Step 1: Verify Database is Added
 
 1. Go to your Railway project dashboard
 2. You should see TWO services:
    - Your application service (dmtbus-app)
    - PostgreSQL database service
 
-3. **IMPORTANT**: Click on your application service, then click on "Variables" tab
-4. Check if these variables exist:
-   - `PGHOST`
-   - `PGPORT`
-   - `PGUSER`
-   - `PGPASSWORD` or `POSTGRES_PASSWORD`
-   - `PGDATABASE`
-
-### Step 2: If Variables Are Missing - Link the Database
-
-If the above variables are NOT showing in your application service:
-
-1. Click on your PostgreSQL service
-2. Go to "Connect" tab
-3. Look for "Available Variables" section
-4. You should see variables like `${{Postgres.PGHOST}}`, `${{Postgres.PGUSER}}`, etc.
-
-5. Go back to your application service
-6. Click "Variables" tab
-7. Click "+ New Variable"
-8. Add these variables **with references to the database service**:
-
-   ```
-   PGHOST = ${{Postgres.PGHOST}}
-   PGPORT = ${{Postgres.PGPORT}}
-   PGUSER = ${{Postgres.PGUSER}}
-   POSTGRES_PASSWORD = ${{Postgres.PGPASSWORD}}
-   PGDATABASE = ${{Postgres.PGDATABASE}}
-   ```
-
-   **Note**: Replace `Postgres` with the actual name of your PostgreSQL service if it's different.
-
-### Step 3: Ensure Spring Profile is Set
+### Step 2: Ensure Spring Profile is Set
 
 In your application service, under "Variables" tab, ensure this variable is set:
 
@@ -52,7 +23,50 @@ In your application service, under "Variables" tab, ensure this variable is set:
 SPRING_PROFILES_ACTIVE = prod
 ```
 
-### Step 4: Redeploy
+### Step 3: Verify DATABASE_URL is Available (Railway does this automatically)
+
+Railway automatically provides a `DATABASE_URL` variable to your application when the PostgreSQL service is in the same project. The application will automatically convert it from:
+- `postgresql://user:password@host:port/database` (Railway format)
+- to `jdbc:postgresql://user:password@host:port/database` (JDBC format)
+
+To verify:
+1. Click on your application service
+2. Go to "Variables" tab
+3. You should see `DATABASE_URL` listed (it will reference the PostgreSQL service)
+
+If you DON'T see `DATABASE_URL`, then the services are not linked. Continue to Step 4.
+
+### Step 4: Link Services (Only if DATABASE_URL is missing)
+
+If `DATABASE_URL` is not showing in your application variables:
+
+1. Delete the application service (don't worry, you can recreate it from GitHub)
+2. In your Railway project, click "New" → "GitHub Repo"
+3. Select your repository
+4. Railway should auto-detect the Dockerfile and deploy
+5. The `DATABASE_URL` should now be automatically available since both services are in the same project
+
+### Alternative: Manual Variable Setup
+
+If you prefer to use individual variables instead of `DATABASE_URL`:
+
+1. Click on your PostgreSQL service
+2. Go to "Connect" tab  
+3. Click on "Variables" tab
+4. Copy the reference format for each variable (e.g., `${{Postgres.PGHOST}}`)
+
+5. Go to your application service → "Variables" tab
+6. Add these variables:
+   ```
+   PGHOST = ${{Postgres.PGHOST}}
+   PGPORT = ${{Postgres.PGPORT}}
+   PGUSER = ${{Postgres.PGUSER}}
+   POSTGRES_PASSWORD = ${{Postgres.PGPASSWORD}}
+   PGDATABASE = ${{Postgres.PGDATABASE}}
+   ```
+   **Note**: Replace `Postgres` with your actual PostgreSQL service name
+
+### Step 5: Redeploy
 
 After setting the variables:
 1. Go to "Deployments" tab in your application service
