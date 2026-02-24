@@ -10,13 +10,12 @@ public class Application {
 		// Debug: Print all database-related environment variables
 		System.out.println("=== Railway Environment Variables Debug ===");
 		System.out.println("DATABASE_URL: " + (System.getenv("DATABASE_URL") != null ? "EXISTS" : "NOT SET"));
+		System.out.println("DATABASE_URL: " + System.getenv("DATABASE_URL"));
 		System.out.println("PGHOST: " + System.getenv("PGHOST"));
 		System.out.println("PGPORT: " + System.getenv("PGPORT"));
 		System.out.println("PGUSER: " + System.getenv("PGUSER"));
-		System.out.println("PGUSER: " + System.getenv("{Postgres.PGUSER}"));
 		System.out.println("PGDATABASE: " + System.getenv("PGDATABASE"));
 		System.out.println("POSTGRES_PASSWORD: " + (System.getenv("POSTGRES_PASSWORD") != null ? "EXISTS" : "NOT SET"));
-		System.out.println("CONSIDERATECONSIDERATION_PGPASSWORD: " + (System.getenv("CONSIDERATECONSIDERATION_PGPASSWORD") != null ? "EXISTS" : "NOT SET"));
 		System.out.println("PGPASSWORD: " + (System.getenv("PGPASSWORD") != null ? "EXISTS" : "NOT SET"));
 
 		// Convert Railway's DATABASE_URL from postgresql:// to jdbc:postgresql://
