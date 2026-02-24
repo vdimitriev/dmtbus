@@ -25,15 +25,7 @@ public class OpenApiConfig {
                                 .url("https://github.com/vdimitriev/dmtbus"))
                         .license(new License()
                                 .name("MIT License")
-                                .url("https://opensource.org/licenses/MIT")))
-                .servers(List.of(
-                        new Server()
-                                .url("http://localhost:8080")
-                                .description("Local Development Server"),
-                        new Server()
-                                .url("https://api.dmtbus.com")
-                                .description("Production Server")
-                ));
+                                .url("https://opensource.org/licenses/MIT")));
     }
 }
 
