@@ -10,7 +10,6 @@ public class Application {
 		// Debug: Print all database-related environment variables
 		System.out.println("=== Railway Environment Variables Debug ===");
 		System.out.println("DATABASE_URL: " + (System.getenv("DATABASE_URL") != null ? "EXISTS" : "NOT SET"));
-		System.out.println("DATABASE_URL: " + System.getenv("DATABASE_URL"));
 		System.out.println("PGHOST: " + System.getenv("PGHOST"));
 		System.out.println("PGPORT: " + System.getenv("PGPORT"));
 		System.out.println("PGUSER: " + System.getenv("PGUSER"));
