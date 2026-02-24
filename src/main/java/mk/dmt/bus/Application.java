@@ -13,11 +13,8 @@ public class Application {
 		System.out.println("PGHOST: " + System.getenv("PGHOST"));
 		System.out.println("PGPORT: " + System.getenv("PGPORT"));
 		System.out.println("PGUSER: " + System.getenv("PGUSER"));
+		System.out.println("PGUSER: " + System.getenv("{Postgres.PGUSER}"));
 		System.out.println("PGDATABASE: " + System.getenv("PGDATABASE"));
-		System.out.println("CONSIDERATECONSIDERATION_PGHOST: " + System.getenv("CONSIDERATECONSIDERATION_PGHOST"));
-		System.out.println("CONSIDERATECONSIDERATION_PGPORT: " + System.getenv("CONSIDERATECONSIDERATION_PGPORT"));
-		System.out.println("CONSIDERATECONSIDERATION_PGUSER: " + System.getenv("CONSIDERATECONSIDERATION_PGUSER"));
-		System.out.println("ONSIDERATECONSIDERATION_PGDATABASE: " + System.getenv("ONSIDERATECONSIDERATION_PGDATABASE"));
 		System.out.println("POSTGRES_PASSWORD: " + (System.getenv("POSTGRES_PASSWORD") != null ? "EXISTS" : "NOT SET"));
 		System.out.println("CONSIDERATECONSIDERATION_PGPASSWORD: " + (System.getenv("CONSIDERATECONSIDERATION_PGPASSWORD") != null ? "EXISTS" : "NOT SET"));
 		System.out.println("PGPASSWORD: " + (System.getenv("PGPASSWORD") != null ? "EXISTS" : "NOT SET"));
