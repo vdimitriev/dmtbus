@@ -15,6 +15,7 @@ public class Application {
 		System.out.println("PGUSER: " + System.getenv("PGUSER"));
 		System.out.println("PGDATABASE: " + System.getenv("PGDATABASE"));
 		System.out.println("POSTGRES_PASSWORD: " + (System.getenv("POSTGRES_PASSWORD") != null ? "EXISTS" : "NOT SET"));
+		System.out.println("CONSIDERATECONSIDERATION_PGPASSWORD: " + (System.getenv("CONSIDERATECONSIDERATION_PGPASSWORD") != null ? "EXISTS" : "NOT SET"));
 		System.out.println("PGPASSWORD: " + (System.getenv("PGPASSWORD") != null ? "EXISTS" : "NOT SET"));
 
 		// Convert Railway's DATABASE_URL from postgresql:// to jdbc:postgresql://
